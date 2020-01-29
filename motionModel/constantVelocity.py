@@ -1,12 +1,13 @@
 import numpy as np
 
 
-class constantVelocityModel:
+class ConstantVelocityModel:
 
-    def __init__(self, dims=2):
+    def __init__(self, dims):
         """
         Initialize the parameters of constant velocity motion model
         """
+        dims = int(dims)
         dt = 0.0
         # state transition matrix
         self.F = np.vstack((
@@ -21,7 +22,7 @@ class constantVelocityModel:
         # input
         self.u = np.zeros((2*dims, 1))
         # observation
-        self.H = np.hstack((np.eye(dims), np.zeros(dims, dims)))
+        self.H = np.hstack((np.eye(dims), np.zeros((dims, dims))))
         # observation noise
         self.R = 1 * np.eye(dims)
 
