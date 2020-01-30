@@ -7,6 +7,7 @@ import sys
 sys.path.append('..')
 from kalmanFilter import kf
 from motionModel import constantVelocity
+from motionModel import constantAcceleration
 
 
 class VehicleTracker:
@@ -95,7 +96,7 @@ class VehicleTracker:
                            'predicted_box': [np.array(det)],
                            'cg': [self.box_cg(det)],
                            'kf': kf.KalmanFilter(self.box_cg(det), time_stamp,
-                                                 constantVelocity.ConstantVelocityModel(dims=2)),
+                                                 constantAcceleration.ConstantAccelerationModel(dims=2)),
                            'id': next(self.id)}
                           for det in detections]
             self.Ta += new_tracks
