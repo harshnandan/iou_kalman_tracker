@@ -64,7 +64,7 @@ def generate_boxes(image_width, image_height, dt, visualize_traj=False):
                 boxes.append(traj[vh_idx][frame_idx])
             else:
                 boxes.append(traj[vh_idx][-1])
-        if random.random() > 0.6:
+        if random.random() > 0.:
             boxes_traj.append(boxes)
         timestamp += dt
     if visualize_traj:

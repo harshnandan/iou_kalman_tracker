@@ -7,13 +7,16 @@ from utils import helper
 # image parameters
 image_width = 1280
 image_height = 720
-img = 255 * np.ones((image_height, image_width, 3), dtype=np.int8)
+img = 255 * np.ones((image_height, image_width, 3), dtype=np.uint8)
 
 # get trajectory
 trajectories = helper.generate_boxes(image_width, image_height, 100, False)
 
 # initialize a tracker object
 track_obj = iou_tracker.VehicleTracker()
+
+fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+videoWriter = cv2.VideoWriter('{}/video_result.mp4'.format('.'), fourcc, 2, (image_width, image_height))
 
 for i in range(0, len(trajectories)):
     img_copy = img.copy()
@@ -56,5 +59,7 @@ for i in range(0, len(trajectories)):
     plt.imshow(img_copy)
     plt.pause(0.1)
 
+    videoWriter.write(img_copy)
 
+videoWriter.release()
 plt.show()
