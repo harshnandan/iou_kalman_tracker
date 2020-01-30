@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import random
 
 def iou(bbox1, bbox2):
     """
@@ -63,7 +64,8 @@ def generate_boxes(image_width, image_height, dt, visualize_traj=False):
                 boxes.append(traj[vh_idx][frame_idx])
             else:
                 boxes.append(traj[vh_idx][-1])
-        boxes_traj.append(boxes)
+        if random.random() > 0.6:
+            boxes_traj.append(boxes)
         timestamp += dt
     if visualize_traj:
         img = 255 * np.ones((image_height, image_width, 3), dtype=np.int8)
@@ -73,7 +75,7 @@ def generate_boxes(image_width, image_height, dt, visualize_traj=False):
 
             plt.clf()
             plt.imshow(img)
-            plt.pause(0.2)
+            plt.pause(1)
 
     return boxes_traj
 
