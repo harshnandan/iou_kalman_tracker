@@ -44,7 +44,7 @@ def box_cg(box):
     return [((box[0] + box[2]) / 2), ((box[1] + box[3]) / 2)]
 
 
-def generate_boxes(image_width, image_height, visualize_traj=False):
+def generate_boxes(image_width, image_height, dt, visualize_traj=False):
     traj = []
     v1 = Vehicle(200, 500, 100, 100, image_width, image_height, 10, 5)
     traj.append(v1.trajectory_box)
@@ -55,15 +55,16 @@ def generate_boxes(image_width, image_height, visualize_traj=False):
     max_count = max(len(traj[0]), len(traj[1]))
 
     boxes_traj = []
+    timestamp = dt
     for frame_idx in range(max_count):
-        boxes = []
+        boxes = [timestamp]
         for vh_idx in range(2):
             if frame_idx < len(traj[vh_idx]):
                 boxes.append(traj[vh_idx][frame_idx])
             else:
                 boxes.append(traj[vh_idx][-1])
         boxes_traj.append(boxes)
-
+        timestamp += dt
     if visualize_traj:
         img = 255 * np.ones((image_height, image_width, 3), dtype=np.int8)
         for frame_idx in range(max_count):

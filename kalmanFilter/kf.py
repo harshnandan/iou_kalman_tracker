@@ -15,7 +15,7 @@ class KalmanFilter:
         self.motion_model = motion_model
 
         self.motion_model.update_F(dt)
-        self.motion_model.set_state(init_state)
+        self.motion_model.set_init_state(init_state)
 
     def predict(self, time_stamp):
         """
@@ -27,8 +27,22 @@ class KalmanFilter:
         dt = (self.time_stamp[-1] - self.time_stamp[-2]) / 1000
         self.motion_model.update_F(dt)
 
-        self.motion_model.x = np.matmul(self.motion_model.F, self.motion_model.x) + self.u
+        self.motion_model.x = np.matmul(self.motion_model.F, self.motion_model.x) + self.motion_model.u
         self.motion_model.P = np.matmul(np.matmul(self.motion_model.F, self.motion_model.P), self.motion_model.F.transpose())
+
+    def predict_data_association(self, time_stamp):
+        """
+        Performs the prediction step of kalman filter
+        :param time_stamp: Time stamp at which prediction is asked for
+        :return: None
+        """
+        dt = (time_stamp - self.time_stamp[-1]) / 1000
+        self.motion_model.update_F(dt)
+        print('predict_data_association - self.x', self.motion_model.x)
+        x = np.matmul(self.motion_model.F, self.motion_model.x) + self.motion_model.u
+        P = np.matmul(np.matmul(self.motion_model.F, self.motion_model.P), self.motion_model.F.transpose())
+        print('predict_data_association - x', x)
+        return x
 
     def update(self, z_measured):
         """
@@ -37,8 +51,10 @@ class KalmanFilter:
         :return: None
         """
         # measurement update
-        z = np.array([[x], [y]], dtype=np.float32)
+        # z = np.array([[x], [y]], dtype=np.float32)
+        z = z_measured
         err = z - np.matmul(self.motion_model.H, self.motion_model.x)
+
         S = np.matmul(np.matmul(self.motion_model.H, self.motion_model.P),
                       self.motion_model.H.transpose()) + self.motion_model.R
         S_inv = np.linalg.inv(S)
