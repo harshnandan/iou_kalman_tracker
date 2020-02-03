@@ -16,7 +16,9 @@ trajectories = helper.generate_boxes(image_width, image_height, 100, False)
 track_obj = iou_tracker.VehicleTracker()
 
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-videoWriter = cv2.VideoWriter('{}/video_result.mp4'.format('.'), fourcc, 2, (image_width, image_height))
+videoWriter = cv2.VideoWriter('{}/video_result.mp4'.format('./output'), fourcc, 2, (image_width, image_height))
+
+plt.figure(figsize=(20, 20))
 
 for i in range(0, len(trajectories)):
     img_copy = img.copy()
