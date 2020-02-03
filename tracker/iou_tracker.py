@@ -45,9 +45,12 @@ class VehicleTracker:
 
                 [print('detection', d) for d in detections]
                 iou_arr_kf_predicted = np.zeros((detections.shape[0], 1))
-                cg = track['kf'].predict_data_association(time_stamp)
-                w = track['bboxes'][-1][2] - track['bboxes'][-1][0]
-                h = track['bboxes'][-1][3] - track['bboxes'][-1][1]
+                state_prediction = track['kf'].predict_data_association(time_stamp)
+                cg = state_prediction[0:2]
+                w = state_prediction[2]
+                h = state_prediction[3]
+                # w = track['bboxes'][-1][2] - track['bboxes'][-1][0]
+                # h = track['bboxes'][-1][3] - track['bboxes'][-1][1]
                 predicted_bbox = np.array([cg[0] - w / 2, cg[1] - h / 2, cg[0] + w / 2, cg[1] + h / 2], dtype=np.int32)
                 track['predicted_box'].append(predicted_bbox)
 
@@ -78,7 +81,9 @@ class VehicleTracker:
                     # update the state using predict as associated measurement has been found
                     track['kf'].predict(time_stamp)
                     # measurement update after data association
-                    track['kf'].update(cg)
+                    observation = np.vstack((self.box_cg(best_match), np.array([[best_match[2] - best_match[0]],
+                                                                                [best_match[3] - best_match[1]]])))
+                    track['kf'].update(observation)
 
                     track['bboxes'].append(best_match)
                     track['cg'].append(cg)
@@ -92,14 +97,19 @@ class VehicleTracker:
         if len(detections) > 0:
             print('------ starting new track ------ '.format('\n'))
             print('new detections', detections)
-            new_tracks = [{'bboxes': [det],
-                           'predicted_box': [np.array(det)],
-                           'cg': [self.box_cg(det)],
-                           'kf': kf.KalmanFilter(self.box_cg(det), time_stamp,
-                                                 # constantVelocity.ConstantVelocityModel(dims=2)),
-                                                 constantAcceleration.ConstantAccelerationModel(dims=2)),
-                           'id': next(self.id)}
-                          for det in detections]
+            new_tracks = []
+            for det in detections:
+                # state = self.box_cg(det)
+                print(self.box_cg(det).shape)
+                observation = np.vstack((self.box_cg(det), np.array([[det[2]-det[0]], [det[3]-det[1]]])))
+                new_tracks.append( {'bboxes': [det],
+                               'predicted_box': [np.array(det)],
+                               'cg': [self.box_cg(det)],
+                               'kf': kf.KalmanFilter(observation, time_stamp,
+                                                     # constantVelocity.ConstantVelocityModel(dims=2)),
+                                                     constantAcceleration.ConstantAccelerationModel(dims=4)),
+                               'id': next(self.id)}
+                               )
             self.Ta += new_tracks
 
     def iou(self, bbox1, bbox2):

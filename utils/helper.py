@@ -120,5 +120,5 @@ class Vehicle:
             self.x1 = self.x0 + int(self.w * (1 -0.5 * (random.random() -0.5)))
             self.y1 = self.y0 + int(self.h * (1 -0.5 * (random.random() -0.5)))
             # adding noise to box detections
-            if random.random() > 0.2:
+            if random.random() > 0.1:
                 self.trajectory_box.append((self.x0, self.y0, self.x1, self.y1))
