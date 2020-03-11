@@ -9,7 +9,8 @@ To alleviate these limitations a Kalman Filter (KF) based [SORT](https://arxiv.o
 
 The main purpose of this code is to understand the working and performance of Kalman filter when implemented with IOU metric for tracking using detection boxes. In the following two tracking simulation I used a constant velocity and a constant acceleration model to check the performance on the kind of trajectories common in vehicle tracking application.
 
-![Constant Velocity Motion Model](./images/constant_vel_allframes.gif) {:height="50%" width="50%"}
+#![Constant Velocity Motion Model](./images/constant_vel_allframes.gif)
+<img src="images/constant_vel_allframes.gif" alt="Tracking using constant velocity model" width="200">
 *Tracking using constant velocity model*
 
 ![Constant Acceleration Motion Model](./images/constant_acc_allframes.gif)
