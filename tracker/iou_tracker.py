@@ -1,12 +1,19 @@
+"""
+This is the core tracking engine of IOU+Kalman filter based tracking of bounding box.
+
+An IOU based tracker explained at following link was modified to implement Kalman filter based
+data association and tracking.
 ## https://github.com/bochinski/iou-tracker/blob/master/iou_tracker.py
 ## https://www.youtube.com/watch?v=JdzaKqXYlnM
+
+"""
 import itertools
 import numpy as np
 import sys
 
 sys.path.append('..')
 from kalmanFilter import kf
-from motionModel import constantVelocity
+# from motionModel import constantVelocity
 from motionModel import constantAcceleration
 
 
@@ -14,7 +21,6 @@ class VehicleTracker:
 
     def __init__(self):
         self.Ta = []
-        self.Tf = []
         self.id = itertools.count(1)
 
     def track_iou(self, detections, time_stamp, sigma_iou, t_min):
@@ -54,7 +60,7 @@ class VehicleTracker:
                 predicted_bbox = np.array([cg[0] - w / 2, cg[1] - h / 2, cg[0] + w / 2, cg[1] + h / 2], dtype=np.int32)
                 track['predicted_box'].append(predicted_bbox)
 
-                print('prediction bbox', predicted_bbox.transpose())
+                print('prediction bbox', predicted_bbox)
 
                 for i in range(detections.shape[0]):
                     iou_arr_kf_predicted[i] = self.iou(predicted_bbox, detections[i])

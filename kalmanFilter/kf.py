@@ -38,10 +38,10 @@ class KalmanFilter:
         """
         dt = (time_stamp - self.time_stamp[-1]) / 1000
         self.motion_model.update_F(dt)
-        print('predict_data_association - self.x', self.motion_model.x)
+        # print('predict_data_association - self.x', self.motion_model.x)
         x = np.matmul(self.motion_model.F, self.motion_model.x) + self.motion_model.u
         P = np.matmul(np.matmul(self.motion_model.F, self.motion_model.P), self.motion_model.F.transpose())
-        print('predict_data_association - x', x)
+        # print('predict_data_association - x', x)
         return x
 
     def update(self, z_measured):
